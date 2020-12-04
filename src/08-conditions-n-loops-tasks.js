@@ -236,8 +236,12 @@ function findFirstSingleChar(str) {
  *   5, 3, true, true   => '[3, 5]'
  *
  */
-function getIntervalString(/* a, b, isStartIncluded, isEndIncluded */) {
-  throw new Error('Not implemented');
+function getIntervalString(a, b, isStartIncluded, isEndIncluded) {
+  if (a < b) {
+    return `${isStartIncluded ? '[' : '('}${a}, ${b}${isEndIncluded ? ']' : ')'}`;
+  }
+
+  return `${isEndIncluded ? '[' : '('}${b}, ${a}${isStartIncluded ? ']' : ')'}`;
 }
 
 
@@ -253,8 +257,8 @@ function getIntervalString(/* a, b, isStartIncluded, isEndIncluded */) {
  * 'rotator' => 'rotator'
  * 'noon' => 'noon'
  */
-function reverseString(/* str */) {
-  throw new Error('Not implemented');
+function reverseString(str) {
+  return str.split('').reverse().join('');
 }
 
 
@@ -270,8 +274,8 @@ function reverseString(/* str */) {
  *   87354 => 45378
  *   34143 => 34143
  */
-function reverseInteger(/* num */) {
-  throw new Error('Not implemented');
+function reverseInteger(num) {
+  return num.toString(10).split('').reverse().join('');
 }
 
 
@@ -295,8 +299,22 @@ function reverseInteger(/* num */) {
  *   5436468789016589 => false
  *   4916123456789012 => false
  */
-function isCreditCardNumber(/* ccn */) {
-  throw new Error('Not implemented');
+function isCreditCardNumber(ccn) {
+  const digitsArray = ccn.toString(10).split('');
+  const sum = digitsArray.reduce((acc, val, index) => {
+    let cardNumber = parseInt(val, 10);
+
+    if ((digitsArray.length - index) % 2 === 0) {
+      cardNumber *= 2;
+      if (cardNumber > 9) {
+        cardNumber -= 9;
+      }
+    }
+
+    return acc + cardNumber;
+  }, 0);
+
+  return sum % 10 === 0;
 }
 
 /**
@@ -313,8 +331,16 @@ function isCreditCardNumber(/* ccn */) {
  *   10000 ( 1+0+0+0+0 = 1 ) => 1
  *   165536 (1+6+5+5+3+6 = 26,  2+6 = 8) => 8
  */
-function getDigitalRoot(/* num */) {
-  throw new Error('Not implemented');
+function getDigitalRoot(num) {
+  const numbersArray = num.toString(10).split('');
+
+  const sum = numbersArray.reduce((acc, val) => acc + (+val), 0);
+
+  if (sum > 9) {
+    return getDigitalRoot(sum);
+  }
+
+  return sum;
 }
 
 
@@ -339,8 +365,30 @@ function getDigitalRoot(/* num */) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
+function isBracketsBalanced(str) {
+  if (str === '') { return true; }
+  if (str.length % 2) { return false; }
+
+  const stack = [str[0]];
+
+  const BRACKETS = {
+    '>': '<',
+    '}': '{',
+    ')': '(',
+    ']': '[',
+  };
+
+  for (let i = 0; i < str.length - 1; i += 1) {
+    if (str[i] === str[i + 1]
+      || ((stack[stack.length - 1] === BRACKETS[str[i + 1]])
+      && (stack[stack.length - 1] !== undefined))) {
+      stack.pop();
+    } else {
+      stack.push(str[i + 1]);
+    }
+  }
+
+  return stack.length === 0;
 }
 
 
@@ -364,15 +412,15 @@ function isBracketsBalanced(/* str */) {
  *    365, 4  => '11231'
  *    365, 10 => '365'
  */
-function toNaryString(/* num, n */) {
-  throw new Error('Not implemented');
+function toNaryString(num, n) {
+  return num.toString(n);
 }
 
 
 /**
  * Returns the commom directory path for specified array of full filenames.
  *
- * @param {array} pathes
+ * @param {array} paths
  * @return {string}
  *
  * @example:
@@ -381,8 +429,19 @@ function toNaryString(/* num, n */) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/webalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(paths) {
+  const minPath = paths.reduce((acc, val) => (acc.length <= val.length ? acc : val));
+  let result = '';
+
+  for (let i = 0; i < minPath.length; i += 1) {
+    if (paths.every((val) => val.indexOf(minPath[i]) !== -1)) {
+      result += minPath[i];
+    } else {
+      break;
+    }
+  }
+
+  return result.substring(0, result.lastIndexOf('/') + 1);
 }
 
 
