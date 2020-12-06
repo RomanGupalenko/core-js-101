@@ -463,8 +463,25 @@ function getCommonDirectoryPath(paths) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const m1NumRows = m1.length;
+  const m1NumCols = m1[0].length;
+  const m2NumCols = m2[0].length;
+  const resultMatrix = new Array(m1NumRows);
+
+  for (let row = 0; row < m1NumRows; row += 1) {
+    resultMatrix[row] = new Array(m2NumCols);
+
+    for (let col = 0; col < m2NumCols; col += 1) {
+      resultMatrix[row][col] = 0;
+
+      for (let i = 0; i < m1NumCols; i += 1) {
+        resultMatrix[row][col] += m1[row][i] * m2[i][col];
+      }
+    }
+  }
+
+  return resultMatrix;
 }
 
 
@@ -498,8 +515,51 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  if (position.map((val) => val.filter((x) => x === 'X')).filter((val) => val.length === 3).length !== 0) {
+    return 'X';
+  }
+  if (position.map((val) => val.filter((x) => x === '0')).filter((val) => val.length === 3).length !== 0) {
+    return '0';
+  }
+  if (position[0][0] === 'X' && position[1][1] === 'X' && position[2][2] === 'X') {
+    return 'X';
+  }
+  if (position[0][0] === '0' && position[1][1] === '0' && position[2][2] === '0') {
+    return '0';
+  }
+  if (position[0][2] === 'X' && position[1][1] === 'X' && position[2][0] === 'X') {
+    return 'X';
+  }
+  if (position[0][2] === '0' && position[1][1] === '0' && position[2][0] === '0') {
+    return '0';
+  }
+
+  for (let i = 0; i < 3; i += 1) {
+    let check0 = 0;
+    let checkX = 0;
+
+    for (let j = 0; j < 3; j += 1) {
+      if (position[j][i] === 'X') {
+        checkX += 1;
+      }
+      if (position[j][i] === '0') {
+        check0 += 1;
+      }
+    }
+
+    if (check0 === 3) {
+      return '0';
+    }
+    if (checkX === 3) {
+      return 'X';
+    }
+
+    check0 = 0;
+    checkX = 0;
+  }
+
+  return undefined;
 }
 
 
